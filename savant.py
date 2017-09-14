@@ -10,7 +10,10 @@ Attributes:
         bot administrative commands such as the exitcode, or those set by plugins.
     exitcode (string): Text which is used in the exit command. Note that the user that
         sends this code MUST have the adminname variable as their nickname.
-    plugins (class): Contains data about plugins installed for savant.
+    pluginsatstart (class): Contains data about plugins installed for savant.
+
+Todo:
+    * ln
 """
 # left off at ln70, which calls plugins.
 import importlib
@@ -21,7 +24,7 @@ import ircutils # contains functions for interacting with IRC servers
 # global vars
 adminname = "zauberin"
 exitcode = "bye " + ircutils.botnick
-plugins = {
+pluginsatstart = {
     name: importlib.import_module(name)
     for finder, name, ispkg
     in pkgutil.iter_modules()
@@ -35,7 +38,7 @@ def getplugins():
 
     Returns:
         plugins (class): The refreshed plugins class is returned.
-            Normally is applied to the global var plugins.
+            Normally is applied to the var plugins.
     """
     pluginlist = {
         name: importlib.import_module(name)
@@ -52,7 +55,8 @@ def main():
     server = input("Enter the IP address for the IRC server: ")
     channel = input("Enter the channel you would like to join: ")
     botnick = input("Enter the desired bot nickname: ")
-    
+    plugins = getplugins()
+
     ircutils.setnick(botnick)
     ircutils.connect(server)
     ircutils.joinchan(channel)
