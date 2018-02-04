@@ -15,8 +15,14 @@ Attributes:
 Todo:
     * project:
         * Make a default plugin for downloading plugins via the bot.
-        * Make an installer shell script
-        * 
+        * Make the savant_oper.py plugin for advanced admin stuff
+        * Make the werewolf.py and dependencies as a test plugin.
+        * Make a configuration file for savant to store server, botnick, and default channel
+        * Fix remote updating. Git command probably just needs to be put in update.sh and update.sh run from a subprocess.call
+        * Update the pydoc attributes on all modules.
+        * (long-term) Add discord support
+    * ircutils.py:
+        * add a leavechan function, implement in savant_chan.py
     * main():
         * Arg handling needs to be cleaned
         * Plugins need to be printed in the default '.help' command

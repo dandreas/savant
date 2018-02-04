@@ -14,6 +14,9 @@ Attributes:
     channel (string): The default joined channel. The value of this variable
         does NOT reflect all connected channels.
 
+TODO:
+    * Add a leavechan function to leave an irc channel
+
 """
 import socket
 
