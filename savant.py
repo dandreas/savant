@@ -29,6 +29,16 @@ import os # used for finding plugins
 
 import ircutils # contains functions for interacting with IRC servers
 
+installed = False # used to verify installation
+
+# checks to see if savant has been installed
+try:
+    file = open("install.file","r+")
+    file.close()
+    installed = True
+except FileNotFoundError as p:
+    print ("Savant is not installed!\nRun 'install.sh' to remedy this")
+
 # global vars
 adminname = "zauberin"
 exitcode = ircutils.botnick + " shutdown"
@@ -208,4 +218,6 @@ def main():
         if ircmsg.find("PING :") != -1:
             ircutils.ping(ircmsg)
     # while 1:
-main() # starts the program
+
+if installed == True:
+    main() # starts the program

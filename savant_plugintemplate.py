@@ -6,7 +6,6 @@ savant plugin.
 """
 import ircutils # not required, but allows manipulation of the connected IRC chat
 # Required global variables
-# note: savantv isn't read yet, 0.000001 is simply a placeholder for 'no gvs'
 savantv = 0.000001
 """float: Savant Version.
 
