@@ -67,7 +67,6 @@ def load_plugin(pluginName):
         else:
             return 0
     
-
 # temporary function for calling plugins
 def call_plugin(pluginName, rawmsg, name, message, subject):
     plugin = load_plugin(pluginName)
@@ -180,8 +179,8 @@ def main():
                         ircutils.sendmsg("Insufficient permissions")
                 # refreshes plugins
                 if message[:8].find('.refresh') != -1:
-                    ircutils.sendmsg("Plugins would be being refreshed right now")
-                    # plugins = getplugins()
+                    ircutils.sendmsg("Plugins are being refreshed")
+                    get_plugins()
                 # simple hello command
                 if message.lower().find('hi ' + botnick) != -1:
                     ircutils.sendmsg("Hello " + name + "!", subject)
