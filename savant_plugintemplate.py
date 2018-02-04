@@ -18,18 +18,21 @@ to contain all required and optional variables to the most current version.
 """
 
 # Required functions
-def parse(rawmsg, name, message):
+def parse(rawmsg, name, message, subject):
     """Parse API call function.
 
     This function is called by savant when the following conditions are met:
-        The filename for this plugin is valid (savant_{pluginname}.py)
-        A user in a channel savant is listening to sends a message beginning with '.{pluginname}'
+        * The filename for this plugin is valid (savant_{pluginname}.py)
+        * A user in a channel savant is listening to sends a message beginning with '.{pluginname}'
+        * This plugin is located in the directory '../plugins/' relative to savant.py
     Note that the code below is merely an example plugin, and not necessary
+    The example code below uses the ircutils module to join another channel. If there is no channel given, the bot joins #test.
 
     Args:
         rawmsg (string): Full, unsullied string in which the pluginname call was detected
         name (string): The namespace (channel/user in case of pm) in which the call was detected
         message (string): The message which the user sent, the rest of the raw message is trimmed
+        subject (string): The channel or user channel which the message was sent in
     """
     # The following code is an example plugin that simply joins a specified channel using ircutils
     if message != '.plugintemplate':
@@ -37,5 +40,5 @@ def parse(rawmsg, name, message):
         ircutils.joinchan(channel)
         ircutils.sendmsg("Attempting to join " + channel)
     else:
-        ircutils.joinchan("#test")
+        ircutils.joinchan("test")
         ircutils.sendmsg("Attempting to join #test",name)
