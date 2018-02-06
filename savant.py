@@ -21,8 +21,7 @@ Todo:
         * Fix remote updating. Git command probably just needs to be put in update.sh and update.sh run from a subprocess.call
         * Update the pydoc attributes on all modules.
         * (long-term) Add discord support
-    * ircutils.py:
-        * add a leavechan function, implement in savant_chan.py
+        * Make the update function check the install.file for whether it says 'win' or 'nix' to determine which update script to run.
     * main():
         * Arg handling needs to be cleaned
         * Plugins need to be printed in the default '.help' command
@@ -178,7 +177,7 @@ def main():
                 if message[:7].find('.update') != -1:
                     if name.lower() == adminname.lower():
                         ircutils.sendmsg("Updating...")
-                        call(["git", "pull origin master"]) # updates savant via git
+                        call(["update.sh"]) # updates savant via git
                         ircutils.sendmsg("Update finished! Shutting down...")
                         return
                     else:

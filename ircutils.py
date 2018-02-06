@@ -14,17 +14,17 @@ Attributes:
     channel (string): The default joined channel. The value of this variable
         does NOT reflect all connected channels.
 
-TODO:
-    * Add a leavechan function to leave an irc channel
 
 """
 import socket
 
 # global vars
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-botnick = "savant"
-server = "127.0.0.1"
-channel = "#default"
+botnick = "savant" # nickname of savant
+server = "127.0.0.1" # IP address of the IRC server
+channel = "#default" # default channel to connect to
+chans = [] # actual list of connected channels
+connected = False
 
 # functions
 def setnick(name="savant"):
@@ -32,14 +32,19 @@ def setnick(name="savant"):
     
     Changes the bot nickname.
     """
-    global botnick # set with this function
+    # set global botnick to specified name
+    global botnick
     botnick = name
+    # apply botnick on server if connected to one
+    if connected == True:
+        ircsock.send(bytes("NICK " + botnick + "\n", "UTF-8"))
 
 def connect(ircserver="127.0.0.1"): # connects to the server
     """IRC connection function.
 
     This function facilitates the initial connection to an IRC server.
     """
+    global connected # set in this function
     server = ircserver # stores the currently connected server to a global var
     count = 0 # used to determine connection timeouts
     ircmsg = "" # stores input recieved from the irc server
@@ -56,8 +61,22 @@ def connect(ircserver="127.0.0.1"): # connects to the server
         if ircmsg.find("PING :") != -1:
             print("(Connected to server.)")
             ping(ircmsg)
+            connected = True
             return # for some reason the loop wouldn't break without doing this
-            
+
+def leavechan(chan):
+    """Leave an IRC Channel.
+
+    Args:
+        chan (string): The name of the channel to be left.
+    """
+    print("(Attempting to leave channel: #" + chan + ")")
+    if chan in chans == True:
+        ircsock.send(bytes("CLOSE " + "#" + chan + "\n", "UTF-8"))
+        chans.remove(chan)
+    else:
+         print("(ERROR: channel not found in chans list)")
+         sendmsg("Failed attempt to leave channel: #" + chan)
 
 def joinchan(chan):
     """Join an IRC Channel.
@@ -76,6 +95,7 @@ def joinchan(chan):
         if ircmsg.find("PING :") != -1:
             ping(ircmsg)
         print(ircmsg)
+    chans.append(chan) # adds joined channel to joined channel list
 
 def ping(msg):
     """Ping responder.

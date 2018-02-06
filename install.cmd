@@ -1,9 +1,8 @@
-#!/bin/sh
 echo "Creating plugins directory..."
-mkdir ../plugins
+md ../plugins
 echo "Moving default plugins..."
 cp savant_chan.py ../plugins
 echo "Removing update file"
-rm update.file
-echo "nix" > install.file
+del update.file
+echo "win" > install.file
 echo "Installation complete!"
