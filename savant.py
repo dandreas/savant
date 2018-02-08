@@ -190,15 +190,15 @@ def main():
                             pstrfull = ""
                             for pstr in pliststr:
                                 pstrfull += pstr + ' '
-                                ircutils.sendmsg(pstrfull)
+                            ircutils.sendmsg(pstrfull)
                             ct = 0
                             pliststr.clear()
                     if ct > 0:
                         pstrfull = ""
                         for pstr in pliststr:
                             pstrfull += pstr + ' '
-                            ircutils.sendmsg(pstrfull)
-                            ct = 0
+                        ircutils.sendmsg(pstrfull)
+                        ct = 0
                 # /if message[:5].lower().find('.help') != -1:
                 # attempt an update
                 if message[:7].find('.update') != -1:
