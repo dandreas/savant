@@ -70,15 +70,20 @@ def load_plugin(pluginName):
             mod = __import__("savant_%s" % pluginName)
             return mod
         else:
-            return 0
+            return 1
     
 # temporary function for calling plugins
 def call_plugin(pluginName, rawmsg, name, message, subject):
     plugin = load_plugin(pluginName)
-    if plugin != 0:
-        plugin.parse(rawmsg, name, message, subject)
+    if plugin != 1:
+        try:
+            plugin.parse(rawmsg, name, message, subject)
+        except Exception as x:
+            print(str(x))
+            ircutils.sendmsg("Plugin " + pluginName + " encountered an error.")
+        return 0
     else:
-        ircutils.sendmsg("Plugin '" + pluginName + "' not found")
+        return 1
 
 """ Should be re-implemented in the future.
 Make sure to restore comments in getplugins() function.
@@ -150,6 +155,7 @@ def main():
         ircmsg = ircutils.ircsock.recv(2048).decode("UTF-8")
         ircmsg = ircmsg.strip('\n\r')
         print("\nmsg: " + ircmsg)
+        command = False # used to check if a default command was used
 
         # check if the info is a message / dm
         if ircmsg.find('PRIVMSG') != -1:
@@ -170,27 +176,32 @@ def main():
                 # commands
                 # list commands
                 if message[:5].lower().find('.help') != -1:
+                    command = True
                     ircutils.sendmsg("Possible commands:")
                     ircutils.sendmsg("defaults: '.update', '.refresh', '.tell', '.help'")
                     #TODO print off available plugins
                 # attempt an update
                 if message[:7].find('.update') != -1:
+                    command = True
                     if name.lower() == adminname.lower():
                         ircutils.sendmsg("Updating...")
-                        call(["update.sh"]) # updates savant via git
+                        call(["./update.sh"]) # updates savant via git
                         ircutils.sendmsg("Update finished! Shutting down...")
                         return
                     else:
                         ircutils.sendmsg("Insufficient permissions")
                 # refreshes plugins
                 if message[:8].find('.refresh') != -1:
+                    command = True
                     ircutils.sendmsg("Plugins are being refreshed")
                     get_plugins()
                 # simple hello command
                 if message.lower().find('hi ' + botnick) != -1:
+                    command = True
                     ircutils.sendmsg("Hello " + name + "!", subject)
                 # instructs the bot to dm another user
                 if message[:5].find('.tell') != -1:
+                    command = True
                     target = message.split(' ', 1)[1]
                     if target.find(' ') != -1:
                         message = target.split(' ', 1)[1]
@@ -205,7 +216,10 @@ def main():
                     # Just prints the command
                     pluginName = message.split(' ', 1)[0][1:]
                     print("command: " + pluginName)
-                    call_plugin(pluginName,ircmsg,name,message, subject)
+                    retval = call_plugin(pluginName, ircmsg, name, message, subject)
+                    # if no default commands were called and no plugins were found, notify the user.
+                    if retval == 1 and command == False: 
+                        ircutils.sendmsg("Plugin '" + pluginName + "' not found")
                 
                 """ For when importlib is implemented
                 if message[:1] == '.':
