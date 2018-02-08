@@ -29,7 +29,7 @@ Todo:
 import importlib # for future plugin management. not used
 import pkgutil # also for future plugin management. not used
 import sys # used to get command line args
-from subprocess import call # used for remote update
+from subprocess import call # used for remote update (not anymore due to issues)
 import os # used for finding plugins
 
 import ircutils # contains functions for interacting with IRC servers
@@ -179,7 +179,27 @@ def main():
                     command = True
                     ircutils.sendmsg("Possible commands:")
                     ircutils.sendmsg("defaults: '.update', '.refresh', '.tell', '.help'")
-                    #TODO print off available plugins
+                    # prints off available plugins
+                    ircutils.sendmsg("plugins: ")
+                    pliststr = []
+                    ct = 0
+                    for plugin in plugins:
+                        pliststr.append(str(plugin))
+                        ct += 1
+                        if ct > 20:
+                            pstrfull = ""
+                            for pstr in pliststr:
+                                pstrfull += pstr
+                            ircutils.sendmsg(pstrfull)
+                            ct = 0
+                            pliststr.clear()
+                    if ct > 0:
+                        pstrfull = ""
+                        for pstr in pliststr:
+                            pstrfull += pstr
+                            ircutils.sendmsg(pstrfull)
+                            ct = 0
+                # /if message[:5].lower().find('.help') != -1:
                 # attempt an update
                 if message[:7].find('.update') != -1:
                     command = True
@@ -195,6 +215,7 @@ def main():
                     command = True
                     ircutils.sendmsg("Plugins are being refreshed")
                     get_plugins()
+                    ircutils.sendmsg("Plugins refreshed! Use the command '.help' to get a list of active plugins")
                 # simple hello command
                 if message.lower().find('hi ' + botnick) != -1:
                     command = True
@@ -232,10 +253,10 @@ def main():
                     ircutils.sendmsg("Shutting down...")
                     ircutils.exitserver()
                     return
-            # if len(name) < 17:
+            # /if len(name) < 17:
         if ircmsg.find("PING :") != -1:
             ircutils.ping(ircmsg)
-    # while 1:
-
+    # /while 1:
+# /main()
 if installed == True:
     main() # starts the program
