@@ -185,7 +185,7 @@ def main():
                     command = True
                     if name.lower() == adminname.lower():
                         ircutils.sendmsg("Updating...")
-                        call(["./update.sh"]) # updates savant via git
+                        os.system("./update.sh") # updates savant via git
                         ircutils.sendmsg("Update finished! Shutting down...")
                         return
                     else:
