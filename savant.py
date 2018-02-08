@@ -189,14 +189,14 @@ def main():
                         if ct > 20:
                             pstrfull = ""
                             for pstr in pliststr:
-                                pstrfull += pstr
+                                pstrfull += pstr + ' '
                             ircutils.sendmsg(pstrfull)
                             ct = 0
                             pliststr.clear()
                     if ct > 0:
                         pstrfull = ""
                         for pstr in pliststr:
-                            pstrfull += pstr
+                            pstrfull += pstr + ' '
                             ircutils.sendmsg(pstrfull)
                             ct = 0
                 # /if message[:5].lower().find('.help') != -1:
@@ -205,7 +205,7 @@ def main():
                     command = True
                     if name.lower() == adminname.lower():
                         ircutils.sendmsg("Updating...")
-                        os.system("./update.sh") # updates savant via git
+                        os.system("./update.sh") # updates savant
                         ircutils.sendmsg("Update finished! Shutting down...")
                         return
                     else:
