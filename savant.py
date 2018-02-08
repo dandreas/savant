@@ -190,7 +190,7 @@ def main():
                             pstrfull = ""
                             for pstr in pliststr:
                                 pstrfull += pstr + ' '
-                            ircutils.sendmsg(pstrfull)
+                                ircutils.sendmsg(pstrfull)
                             ct = 0
                             pliststr.clear()
                     if ct > 0:
