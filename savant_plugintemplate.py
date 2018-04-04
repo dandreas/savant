@@ -4,7 +4,7 @@
 This module is a basic template demonstrating the required variables/functions to creating a
 savant plugin.
 """
-import ircutils # not required, but allows manipulation of the connected IRC chat
+import ircutils  # not required, but allows manipulation of the connected IRC chat
 # Required global variables
 savantv = 0.000001
 """float: Savant Version.
@@ -16,6 +16,7 @@ info will soon be available on GitHub, until then this template file will be upd
 to contain all required and optional variables to the most current version.
 """
 
+
 # Required functions
 def parse(rawmsg, name, message, subject):
     """Parse API call function.
@@ -25,7 +26,8 @@ def parse(rawmsg, name, message, subject):
         * A user in a channel savant is listening to sends a message beginning with '.{pluginname}'
         * This plugin is located in the directory '../plugins/' relative to savant.py
     Note that the code below is merely an example plugin, and not necessary
-    The example code below uses the ircutils module to join another channel. If there is no channel given, the bot joins #test.
+    The example code below uses the ircutils module to join another channel. If there is no channel given,
+    the bot joins #test.
 
     Args:
         rawmsg (string): Full, unsullied string in which the pluginname call was detected
@@ -35,9 +37,9 @@ def parse(rawmsg, name, message, subject):
     """
     # The following code is an example plugin that simply joins a specified channel using ircutils
     if message != '.plugintemplate':
-        channel = message.split(' ', 1)[0][1:] # trims '.plugintemplate'
+        channel = message.split(' ', 1)[0][1:]  # trims '.plugintemplate'
         ircutils.joinchan(channel)
         ircutils.sendmsg("Attempting to join " + channel)
     else:
         ircutils.joinchan("test")
-        ircutils.sendmsg("Attempting to join #test",name)
+        ircutils.sendmsg("Attempting to join #test", name)

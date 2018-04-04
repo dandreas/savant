@@ -18,6 +18,7 @@ to contain all required and optional variables to the most current version.
 """
 rchans = [ircutils.channel]
 
+
 def parse(rawmsg, name, message, subject):
     """Channel management call function
 
@@ -30,25 +31,25 @@ def parse(rawmsg, name, message, subject):
     global rchans
     if message != '.chan':
         # Split the command and arg from the message
-        command = message.split(' ', 2)[0][1] # trims '.chan'
+        command = message.split(' ', 2)[0][1]  # trims '.chan'
         channel = message.split(' ', 2)[2]
         print("command: " + command + "\nchannel: " + channel)
         # Determine which command was used
-        if command.lesser() == "join": # joins a specified channel
+        if command.lesser() == "join":  # joins a specified channel
             ircutils.sendmsg("Attempting to join " + channel)
             ircutils.joinchan(channel)
-        elif command.lesser() == "leave": # leaves the specified channel
+        elif command.lesser() == "leave":  # leaves the specified channel
             ircutils.sendmsg("Attempting to leave " + channel)
-            if channel in rchans == True: # makes sure savant is actually in that channel
-                if 'oper' in savant.plugins == True:
-                    #TODO fill this in when oper is finished.
+            if channel in rchans:  # makes sure savant is actually in that channel
+                if 'oper' in savant.plugins:
+                    # TODO fill this in when oper is finished.
                     print("(chan: no special oper stuff yet)")
                     if name == savant.adminname:
                         ircutils.leavechan(channel)
                 else:
                     if name == savant.adminname:
                         ircutils.leavechan(channel)
-        elif command.lesser() == "restrict": # restrict leaving this channel to 
+        elif command.lesser() == "restrict":  # restrict leaving this channel to
             ircutils.sendmsg("Restriction added for channel: #" + channel)
             rchans.append(channel)
         elif command.lesser() == "ur":
@@ -57,6 +58,7 @@ def parse(rawmsg, name, message, subject):
                 rchans.remove(channel)
             except ValueError as ex:
                 ircutils.sendmsg("#" + channel + " is not restricted!")
-            
     else:
-        ircutils.sendmsg("Commands: 'join [channel]', 'leave [channel]', 'restrict [channel]' (restricts leave command to admin for specified channel), ur [channel] (unrestricts specified channel)", subject)
+        ircutils.sendmsg("Commands: 'join [channel]', 'leave [channel]', 'restrict [channel]' " +
+                         "(restricts leave command to admin for specified channel), ur [channel] " +
+                         "(unrestricts specified channel)", subject)

@@ -10,7 +10,6 @@ Attributes:
         bot administrative commands such as the exitcode, or those set by plugins.
     exitcode (string): Text which is used in the exit command. Note that the user that
         sends this code MUST have the adminname variable as their nickname.
-    pluginsatstart (class): Contains data about plugins installed for savant.
 
 Todo:
     * project:
@@ -18,41 +17,45 @@ Todo:
         * Make the savant_oper.py plugin for advanced admin stuff
         * Make the werewolf.py and dependencies as a test plugin.
         * Make a configuration file for savant to store server, botnick, and default channel
-        * Fix remote updating. Git command probably just needs to be put in update.sh and update.sh run from a subprocess.call
+        * Fix remote updating. Git command probably just needs to be put in update.sh and update.sh run from a
+        subprocess.call
         * Update the pydoc attributes on all modules.
         * (long-term) Add discord support
-        * Make the update function check the install.file for whether it says 'win' or 'nix' to determine which update script to run.
+        * Make the update function check the install.file for whether it says 'win' or 'nix' to determine which update
+        script to run.
     * main():
         * Arg handling needs to be cleaned
         * Plugins need to be printed in the default '.help' command
 """
-import importlib # for future plugin management. not used
-import pkgutil # also for future plugin management. not used
-import sys # used to get command line args
-from subprocess import call # used for remote update (not anymore due to issues)
-import os # used for finding plugins
+# import importlib  # for future plugin management. not used
+# import pkgutil  # also for future plugin management. not used
+import sys  # used to get command line args
+# from subprocess import call  # used for remote update (not anymore due to issues)
+import os  # used for finding plugins
 
-import ircutils # contains functions for interacting with IRC servers
+import ircutils  # contains functions for interacting with IRC servers
 
-installed = False # used to verify installation
+installed = False  # used to verify installation
 
 # checks to see if savant has been installed
 try:
-    file = open("install.file","r+")
+    file = open("install.file", "r+")
     file.close()
     installed = True
 except FileNotFoundError as p:
-    print ("Savant is not installed!\nRun 'install.sh' to remedy this")
+    print("Savant is not installed!\nRun 'install.sh' to remedy this")
 
 # global vars
 adminname = "zauberin"
 exitcode = ircutils.botnick + " shutdown"
-plugins = [] # written in get_plugins()
-sys.path.append("../plugins") # adds the plugin directory to pythons path
+plugins = []  # written in get_plugins()
+sys.path.append("../plugins")  # adds the plugin directory to pythons path
+
+
 # makes a list of plugins.
 # this list is comprehensive of all of the possible callable plugins
 def get_plugins():
-    global plugins # written here.
+    global plugins  # written here.
     print("\n(checking for plugins)")
     for root, dirs, files in os.walk("../plugins"):
         for file_ in files:
@@ -62,6 +65,8 @@ def get_plugins():
                 plugins.append(plugin)
     for i in range(len(plugins)):
         print(str(plugins[i]))
+
+
 # temporary function for loading plugins
 def load_plugin(pluginName):
     print("(searching for plugin)")
@@ -71,7 +76,8 @@ def load_plugin(pluginName):
             return mod
         else:
             return 1
-    
+
+
 # temporary function for calling plugins
 def call_plugin(pluginName, rawmsg, name, message, subject):
     plugin = load_plugin(pluginName)
@@ -84,6 +90,7 @@ def call_plugin(pluginName, rawmsg, name, message, subject):
         return 0
     else:
         return 1
+
 
 """ Should be re-implemented in the future.
 Make sure to restore comments in getplugins() function.
@@ -112,6 +119,8 @@ def getplugins():
     }
     return pluginlist
 """
+
+
 def main():
     """Application entrypoint
     Runs the bot, listens to connections
@@ -120,7 +129,7 @@ def main():
     channel = "default"
     botnick = "savant"
 
-    #TODO clean this up
+    # TODO clean this up
     if len(sys.argv) != 1:
         for i in range(len(sys.argv)):
             if sys.argv[i] == '-s':
@@ -130,7 +139,8 @@ def main():
             if sys.argv[i] == '-n':
                 botnick = str(sys.argv[i+1])
             if sys.argv[i] == '-h':
-                print("Usage: savant.py [COMMAND] [VALUE] [...]\n'-s' = server IP\n'-c' = channel\n'-n' = botnick (note botnicks set by command line must not have spaces)")
+                print("Usage: savant.py [COMMAND] [VALUE] [...]\n'-s' = server IP\n'-c' = channel\n'-n' = botnick " +
+                      "(note botnicks set by command line must not have spaces)")
     else:
         server = input("Enter the IP address for the IRC server: ")
         channel = input("Enter the channel you would like to join: ")
@@ -155,7 +165,7 @@ def main():
         ircmsg = ircutils.ircsock.recv(2048).decode("UTF-8")
         ircmsg = ircmsg.strip('\n\r')
         print("\nmsg: " + ircmsg)
-        command = False # used to check if a default command was used
+        command = False  # used to check if a default command was used
 
         # check if the info is a message / dm
         if ircmsg.find('PRIVMSG') != -1:
@@ -205,7 +215,7 @@ def main():
                     command = True
                     if name.lower() == adminname.lower():
                         ircutils.sendmsg("Updating...")
-                        os.system("./update.sh") # updates savant
+                        os.system("./update.sh")  # updates savant
                         ircutils.sendmsg("Update finished! Shutting down...")
                         return
                     else:
@@ -239,7 +249,7 @@ def main():
                     print("command: " + pluginName)
                     retval = call_plugin(pluginName, ircmsg, name, message, subject)
                     # if no default commands were called and no plugins were found, notify the user.
-                    if retval == 1 and command == False: 
+                    if retval == 1 and command is False:
                         ircutils.sendmsg("Plugin '" + pluginName + "' not found")
                 
                 """ For when importlib is implemented
@@ -258,5 +268,7 @@ def main():
             ircutils.ping(ircmsg)
     # /while 1:
 # /main()
-if installed == True:
-    main() # starts the program
+
+
+if installed:
+    main()  # starts the program
